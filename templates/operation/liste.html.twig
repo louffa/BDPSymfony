@@ -1,0 +1,99 @@
+{% extends 'accueil.html.twig' %}
+
+{% block title %}Gestion operation{% endblock %}
+
+{% block body %}
+
+<div></br></br></div>
+<div class="row">
+
+        <div class="container col-md-8">
+            <div class="card ">
+                <div class="card-header"><center style="color:red;">infos compte</center></div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <tr>
+                         <th>NUMERO COMPTE</th>
+                            <th>TYPE COMPTE</th>
+                            <th>SOLDE</th>
+                            <th>NOM CLIENT</th>  
+                        </tr>
+                        <tr>
+                            <td>{{ compte.getNumeroCompte() }}</td>
+                            <td>{{ compte.getTypeCompte() }}</td><!-- y'a une fonction toString() qui retourne le libelle ds l'entité typeCompte  -->
+                               
+                            <td>{{ compte.getSolde() }}</td>
+                            <td>{{ compte.getClient().getNom() }} {{ compte.getClient().getPrenom() }}</td>
+                               
+                        </tr>
+                            
+                    </table>        
+                </div>   
+            </div>
+        </div>
+    </div>
+<div></br></br></br></br></div>
+<div class="row">
+            <div class="container col-md-8">
+                <div class="card ">
+                    <div class="card-header"><center style="color:red;">Nouvelle opeation </center></div>
+                        <div class="card-body">
+
+                        {% if error_message is defined %}
+                            <div class="alert alert-danger">{{ error_message  }}</div>
+                        {% endif %}
+                        {% if success_message is defined %}
+                            <div class="alert alert-success">{{ success_message  }}</div>
+                        {% endif %}
+                        {% if reatrait_message is defined %}
+                            <div class="alert alert-success">{{ reatrait_message  }}</div>
+                        {% endif %}
+
+                        {{ form(form) }}
+                        </div>   
+                </div> 
+            </div>
+</div>
+<div></br></br></br></br></div>
+<div class="row">
+
+        <div class="container col-md-11">
+            <div class="card ">
+                <div class="card-header"><center style="color:red;">Liste des operations</center></div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <tr>
+                            <th>IDENTIFIANT</th>
+                            <th>NUMERO OPERATION</th>
+                            <th>TYPE OPERATION</th>
+                            <th>MONTANT</th>
+                            <th>DATE OPERATION</th>
+                            <th>NUMERO COMPTE</th>
+                            <th><center>Action</center></th>
+                            <th><center>Action</center></th>
+                             
+                        </tr>
+                        {% for c in operations %}
+                       
+                            <tr>
+                                <td>{{ c.id }}</td>
+                                <td>{{ c.numeroOperation }}</td>
+                                <td>{{ c.typeOperation }}</td>
+                                <td>{{ c.montant }}</td>
+                                <td>{{ c.dateOperation|date('d/m/y') }}</td>
+                                <td>{{ c.compte.numeroCompte}}</td>
+                                <td><a href=""><button type="button" class="btn btn-warning">Editer</button></a></td>
+                                
+                                <td><a href=""><button type="button" class="btn btn-danger">Delete</button></a></td>
+                            </tr>
+                            
+                        {% endfor %}
+                    
+                    </table>        
+                </div>   
+            </div>
+        </div>
+    </div>
+    <div></br></br></br></br></div>
+
+{% endblock %}

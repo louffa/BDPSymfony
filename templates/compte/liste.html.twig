@@ -1,0 +1,110 @@
+{% extends 'accueil.html.twig' %}
+{%block glyficon%}
+<link href="{{ asset('modaal/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
+<script src="{{ asset('modaal/bootstrap.min.js') }}"></script>
+<script src="{{ asset('modaal/jquery-3.2.1.min.js') }}"></script>
+
+
+
+<style>
+  .modal-header, h4, .close {
+    background-color: #5cb85c;
+    color:white !important;
+    text-align: center;
+    font-size: 30px;
+  }
+  .modal-footer {
+    background-color: #f9f9f9;
+  }
+  </style>
+{% endblock%}
+{% block title %}Gestion Compte{% endblock %}
+
+{% block body %}
+
+<div class="container col-md-11">
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+  Nouveau Client
+</button></div>
+<div></br></br></div>
+<div class="row">
+
+        <div class="container col-md-11">
+            <div class="card ">
+                <div class="card-header"><center style="color:red;">Liste des Comptes</center></div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <tr>
+                            <th>IDENTIFIANT</th>
+                            <th>NUMERO COMPTE</th>
+                            <th>TYPE COMPTE</th>
+                            <th>DATE CREATION</th>
+                            <th>SOLDE</th>
+                            <th>NOM CLIENT</th>
+                            <th>Action</th>
+                            <th>Action</th>
+                            <th>Action</th>
+                             
+                        </tr>
+                        {% for c in comptes %}
+                       
+                            <tr>
+                                <td>{{ c.id }}</td>
+                                <td>{{ c.numeroCompte }}</td>
+                                <td>{{ c.typeCompte.libelle }}</td>
+                                <td>{{ c.dateCreation|date('d/m/y')}}</td>
+                                <td>{{ c.solde }}</td>
+                                <td>{{ c.client.nom }} {{ c.client.prenom }}</td>
+                               
+                                <td><a href="{{ path('compte_edit', {'id':c.id}) }}"><button type="button" class="btn btn-warning">Editer</button></a></td>
+                                <td><a href="{{ path('operation_edit', {'id':c.id}) }}"><button type="button" class="btn btn-success">Liste Ope</button></a></td>
+                                <td><a href="{{ path('compte_delete', {'id':c.id}) }}"><button type="button" class="btn btn-danger">Delete</button></a></td>
+                            </tr>
+                            
+                        {% endfor %}
+                    
+                    </table>        
+                </div>   
+            </div>
+        </div>
+    </div>
+    <div></br></br></br></br></div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Ajouter un client ?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+            <div class="container col-md-12">
+                <div class="card ">
+                    <div class="card-header"><center style="color:red;">Formulaire ajout client</center></div>
+                        <div class="card-body">
+                      {{ form(form) }}
+                        </div>   
+                </div> 
+            </div>
+</div>
+      </div>
+      <div class="modal-footer">
+        <div class="container my-auto">
+  <div class="copyright text-center my-auto">
+    <span>Copyright &copy; Banque-du-Peuple 2020</span>
+  </div>
+</div>
+  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
