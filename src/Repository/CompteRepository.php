@@ -37,16 +37,16 @@ class CompteRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Compte
+    public function findOneBySomeField($numeroCompte): ?Compte
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('c.numeroCompte = :numeroCompte')
+            ->setParameter('numeroCompte', $numeroCompte)
             ->getQuery()
             ->getOneOrNullResult()
         ;
-    }
-    */
+    }*/
+    
     
     public function getMaxId()
     {
@@ -62,6 +62,22 @@ class CompteRepository extends ServiceEntityRepository
         }
         $numero = "BDP_".date('d').date('m').date('Y')."_C".$id;
         return $numero;
+        //return $query->getQuery()->getSingleResult();
+    }
+
+    public function getIdCpt($numeroCompte)
+    {
+        $query = $this->createQueryBuilder('s');
+        $query->select('s')
+        //->from(\Compte::class, 's')
+        ->where('s.numeroCompte= :numeroCompte')
+        
+        ->setParameter('numeroCompte', $numeroCompte);
+        
+    $querys = $query->getQuery();
+    foreach ($querys->getResult() as $compte){
+        return $compte->getId();
+    }
         //return $query->getQuery()->getSingleResult();
     }
    

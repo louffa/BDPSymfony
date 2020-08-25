@@ -41,7 +41,7 @@ class CompteController extends AbstractController
         $g=$p->getDateCreation(); 
         $d=date_diff($g,$t);
         $datediff= $d->format("%a");
-        echo $datediff;//je teste sur un jour
+        echo $datediff;//je teste sur un jour d'abord
         if($datediff==1 && $p->getTypeCompte()->getLibelle()=='epargne simple'){
             
             $solde= $p->getSolde()+5000;
@@ -75,7 +75,7 @@ class CompteController extends AbstractController
             $c->setSolde($solde);
             $etat1='actif';
             $c->setEtatCompte($etat1);
-            $lastid = $repository->getMaxId();//getMaxId() fonction créer dans compteRepository
+            $lastid = $repository->getMaxId();//getMaxId() fonction créer dans compteRepository 
             $c->setNumeroCompte($lastid);
             //$c->setUser($this->getUser());
             $em = $this->getDoctrine()->getManager();

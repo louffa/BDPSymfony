@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Compte;
+
 use App\Entity\Operation;
 use App\Form\OperationType;
+use App\Form\RechercheCompteType;
+use App\Repository\CompteRepository;
 use App\Repository\OperationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,8 +20,45 @@ class OperationController extends AbstractController
      */
     public function index()
     {
-        return $this->render('operation/index.html.twig');
+    
+        $p=new Compte();
+        $form = $this->createForm(RechercheCompteType::class, $p, array('action'=>$this->generateUrl('recherche_compte')));
+        $data['form'] = $form->createView();
+
+        return $this->render('operation/index.html.twig',$data);
     }
+     /**
+     * @Route("/operation/recherche", name="recherche_compte")
+     */
+    public function search(Request $request, CompteRepository $repository)
+    {
+
+        $c = new Compte();
+        $form = $this->createForm(RechercheCompteType::class, $c);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()){
+           $numCpt = $form->get('numeroCompte')->getData();  
+            
+            $em = $this->getDoctrine()->getManager();
+           
+            $id = $repository->getIdCpt($numCpt);
+            
+            $s = new Operation();
+            $form = $this->createForm(OperationType::class, $s, array('action'=>$this->generateUrl('operation_add', ['id' => $id])));
+            $data['form'] = $form->createView();       
+        
+            $data['compte'] = $em->getRepository(Compte::class)->find($id);
+   
+    $data['operations'] = $em->getRepository(Operation::class)->findBy(['compte'=>$id]);
+    return $this->render('operation/liste.html.twig',$data);
+            
+            
+            
+        }
+      
+        
+    }
+
     /**
      * @Route("/Operation/edit/{id}", name="operation_edit")
      */
@@ -26,10 +66,10 @@ class OperationController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
         $p=new Operation();
-        
+        $s=new Compte();
         $form = $this->createForm(OperationType::class, $p, array('action'=>$this->generateUrl('operation_add', ['id' => $id])));//ajouter id en parametre de operation_add se referer a ajoutCompte() ds compte controller
         $data['form'] = $form->createView();
-
+         
         $data['compte'] = $em->getRepository(Compte::class)->find($id);
         //ok ligne35 $data['operations'] = $em->getRepository(Operation::class)->findAll($id);//pour le moment récupere tte les operations or doit recuperer operation compte correspondant
         $data['operations'] = $em->getRepository(Operation::class)->findBy(['compte'=>$id]);
@@ -46,6 +86,7 @@ class OperationController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $c = new Operation();
         $form = $this->createForm(OperationType::class, $c);
+        
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             $c = $form->getData();
