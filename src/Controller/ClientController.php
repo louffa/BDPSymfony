@@ -6,6 +6,8 @@ use App\Entity\Client;
 use App\Entity\Employeur;
 use App\Form\ClientType;
 use App\Form\ClientType2;
+use App\Form\RechercheClientType;
+use App\Repository\ClientRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -22,7 +24,9 @@ class ClientController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $p=new Client;
         $form = $this->createForm(ClientType::class, $p, array('action'=>$this->generateUrl('client_add')));
+        $forms = $this->createForm(RechercheClientType::class, $p, array('action'=>$this->generateUrl('recherche_client')));
         $data['form'] = $form->createView();
+        $data['forms'] = $forms->createView();
 
         $data['clients'] = $em->getRepository(Client::class)->findAll();
         
@@ -40,7 +44,7 @@ class ClientController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
             $c = $form->getData();
-            //$c->setUser($this->getUser());
+            $c->setUser($this->getUser());
             $em = $this->getDoctrine()->getManager();
             $em->persist($c);
             //$em->persist($c->getEmployeur()); soit cette ligne ou cascade={"persist"} au  niveau de l'entité
@@ -112,6 +116,32 @@ class ClientController extends AbstractController
         return $this->redirectToRoute('client');
     }
 
+   /**
+     * @Route("/Client/recherche", name="recherche_client")
+     */
+    public function search(Request $request, ClientRepository $repository)
+    {
+
+        $c = new Client();
+        $forms = $this->createForm(RechercheClientType::class, $c);
+        $forms->handleRequest($request);
+        if ($forms->isSubmitted() && $forms->isValid()){
+           $cni = $forms->get('cni')->getData();  
+            
+            $em = $this->getDoctrine()->getManager();
+           
+            $id = $repository->getIdByCNI($cni);
+            if($id!=null){
+            
+            $data['client'] = $em->getRepository(Client::class)->find($id);
    
+            return $this->render('client/recherche.html.twig',$data);
+        }else{
+            
+                return $this->redirectToRoute('client');
+        }
+    }
+        
+    }
 
 }

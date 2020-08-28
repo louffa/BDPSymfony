@@ -42,6 +42,11 @@ class Operation
      */
     private $type_Operation;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="operations")
+     */
+    private $user;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -103,6 +108,18 @@ class Operation
     public function setTypeOperation(?TypeOperation $type_Operation): self
     {
         $this->type_Operation = $type_Operation;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

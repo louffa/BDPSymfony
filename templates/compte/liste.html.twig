@@ -29,18 +29,23 @@
 <div></br></br></div>
 <div class="row">
 
-        <div class="container col-md-11">
+        <div class="container col-md-12">
             <div class="card ">
                 <div class="card-header"><center style="color:red;">Liste des Comptes</center></div>
                 <div class="card-body">
+                {% if active_message is defined %}
+                            <div class="alert alert-danger">{{ active_message  }}</div>
+                        {% endif %}
                     <table class="table table-striped">
                         <tr>
-                            <th>IDENTIFIANT</th>
+                            <th>ID</th>
                             <th>NUMERO COMPTE</th>
                             <th>TYPE COMPTE</th>
                             <th>DATE CREATION</th>
                             <th>SOLDE</th>
                             <th>NOM CLIENT</th>
+                            <th>Action</th>
+                            <th>Action</th>
                             <th>Action</th>
                             <th>Action</th>
                             <th>Action</th>
@@ -55,10 +60,19 @@
                                 <td>{{ c.dateCreation|date('d/m/y')}}</td>
                                 <td>{{ c.solde }}</td>
                                 <td>{{ c.client.nom }} {{ c.client.prenom }}</td>
-                               
+                               {%if c.etatCompte=='actif'%}
+                                <td><a >ACTIVER</a></td>
                                 <td><a href="{{ path('compte_edit', {'id':c.id}) }}"><button type="button" class="btn btn-warning">Editer</button></a></td>
                                 <td><a href="{{ path('operation_edit', {'id':c.id}) }}"><button type="button" class="btn btn-success">Liste Ope</button></a></td>
                                 <td><a href="{{ path('compte_delete', {'id':c.id}) }}"><button type="button" class="btn btn-danger">Delete</button></a></td>
+                                <td><a href="{{ path('compte_bloquer', {'id':c.id}) }}"><button type="button" class="btn btn-primary">Bloquer</button></a></td>
+                                {%else%}
+                                <td><a href="{{ path('compte_activer', {'id':c.id}) }}"><button type="button" class="btn btn-primary">Activer</button></a></td>
+                                <td><a href="{{ path('compte_edit', {'id':c.id}) }}"><button type="button" class="btn btn-warning">Editer</button></a></td>
+                                <td><a href="{{ path('operation_edit', {'id':c.id}) }}"><button type="button" class="btn btn-success">Liste Ope</button></a></td>
+                                <td><a href="{{ path('compte_delete', {'id':c.id}) }}"><button type="button" class="btn btn-danger">Delete</button></a></td>
+                                <td><a>BLOQUER</a></td>
+                                {%endif%}
                             </tr>
                             
                         {% endfor %}

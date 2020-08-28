@@ -7,6 +7,7 @@ use App\Entity\Compte;
 use App\Entity\Operation;
 use App\Form\OperationType;
 use App\Form\RechercheCompteType;
+use App\Form\VirementType;
 use App\Repository\CompteRepository;
 use App\Repository\OperationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,8 +23,12 @@ class OperationController extends AbstractController
     {
     
         $p=new Compte();
+        $o=new Operation();
         $form = $this->createForm(RechercheCompteType::class, $p, array('action'=>$this->generateUrl('recherche_compte')));
         $data['form'] = $form->createView();
+
+        $forms = $this->createForm(VirementType::class, $o, array('action'=>$this->generateUrl('recherche_compteVirement')));
+        $data['forms'] = $forms->createView();
 
         return $this->render('operation/index.html.twig',$data);
     }
@@ -42,7 +47,7 @@ class OperationController extends AbstractController
             $em = $this->getDoctrine()->getManager();
            
             $id = $repository->getIdCpt($numCpt);
-            
+            if ($id!=null){
             $s = new Operation();
             $form = $this->createForm(OperationType::class, $s, array('action'=>$this->generateUrl('operation_add', ['id' => $id])));
             $data['form'] = $form->createView();       
@@ -51,12 +56,20 @@ class OperationController extends AbstractController
    
     $data['operations'] = $em->getRepository(Operation::class)->findBy(['compte'=>$id]);
     return $this->render('operation/liste.html.twig',$data);
-            
-            
-            
+            }else{
+                 
+                $p=new Compte();
+                $o=new Operation();
+                $form = $this->createForm(RechercheCompteType::class, $p, array('action'=>$this->generateUrl('recherche_compte')));
+                $data['form'] = $form->createView();
+
+                $forms = $this->createForm(VirementType::class, $o, array('action'=>$this->generateUrl('recherche_compte')));
+                $data['forms'] = $forms->createView();
+
+                $data['error_message'] = 'ce Compte n\'existe pas !';
+                return $this->render('operation/index.html.twig',$data);
+            } 
         }
-      
-        
     }
 
     /**
@@ -96,11 +109,12 @@ class OperationController extends AbstractController
             
             $lastid = $repository->getMaxId();//getMaxId() fonction créer dans OperationRepository
             $c->setNumeroOperation($lastid);
-            //$c->setUser($this->getUser());
-            
-            $em->persist($c);
+            $c->setUser($this->getUser());
+    
+
+           // $em->persist($c);
             //$em->persist($c->getEmployeur()); soit cette ligne ou cascade={"persist"} au  niveau de l'entité
-            $em->flush();
+            //$em->flush();
              //update solde compte apres une operation de depot
              if ($c->getTypeOperation()=='depot'){
                 $p =$em->getRepository(Compte::class)->find($c->getCompte()->getId());
@@ -112,15 +126,19 @@ class OperationController extends AbstractController
                         $data['form'] = $form->createView();       
                     
                         $data['compte'] = $em->getRepository(Compte::class)->find($id);
+                        $em->persist($c);
+            
+                        $em->flush();
                 $data['success_message'] = 'Operation de depot éffectuée avec succès';
                 $data['operations'] = $em->getRepository(Operation::class)->findBy(['compte'=>$id]);
                 return $this->render('operation/liste.html.twig',$data);
                 
             }
             elseif($c->getTypeOperation()=='retrait'){
-                       
+                     
                 $soldeC = $c->getMontant();
                 $p =$em->getRepository(Compte::class)->find($c->getCompte()->getId());
+                if($p->getEtatCompte()=='actif'){
                     if ($p->getSolde() < $c->getMontant()){
                         $s = new Operation();
                         $form = $this->createForm(OperationType::class, $s, array('action'=>$this->generateUrl('operation_add', ['id' => $id])));
@@ -140,14 +158,37 @@ class OperationController extends AbstractController
                             $data['form'] = $form->createView();       
                         
                             $data['compte'] = $em->getRepository(Compte::class)->find($id);
+                            $em->persist($c);
+            
+                            $em->flush();
                             $data['reatrait_message'] = 'Operation de retrait éffectuée avec succès';
                             $data['operations'] = $em->getRepository(Operation::class)->findBy(['compte'=>$id]);
                             return $this->render('operation/liste.html.twig',$data);
                         }
+                    }else{
+                        $s = new Operation();
+                        $form = $this->createForm(OperationType::class, $s, array('action'=>$this->generateUrl('operation_add', ['id' => $id])));
+                        $data['form'] = $form->createView();       
+                    
+                        $data['compte'] = $em->getRepository(Compte::class)->find($id);
+                        $data['bloquer_message'] = 'Ce compte est bloqué ! opération de retrait impossible';
+                        $data['operations'] = $em->getRepository(Operation::class)->findBy(['compte'=>$id]);
+                        return $this->render('operation/liste.html.twig',$data);
+                    }
                         
             }
         }
      
         //return $this->redirectToRoute('operation_edit', ['id' => $id]);
     }
+
+    /**
+     * @Route("/operation/virement", name="recherche_compteVirement")
+     */
+    public function searchVirement(Request $request, CompteRepository $repository)
+    {
+
+        return $this->redirectToRoute('operation');
+    }
+
 }

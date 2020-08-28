@@ -55,6 +55,11 @@ class Compte
      */
     private $operations;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="comptes")
+     */
+    private $user;
+
     public function __construct()
     {
         $this->solde = "500";
@@ -167,6 +172,18 @@ class Compte
                 $operation->setCompte(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

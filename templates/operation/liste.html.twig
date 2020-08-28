@@ -34,9 +34,10 @@
     </div>
 <div></br></br></br></br></div>
 <div class="row">
+        
             <div class="container col-md-8">
                 <div class="card ">
-                    <div class="card-header"><center style="color:red;">Nouvelle opeation </center></div>
+                    <div class="card-header"><center style="color:red;">Nouvelle operation </center></div>
                         <div class="card-body">
 
                         {% if error_message is defined %}
@@ -48,13 +49,19 @@
                         {% if reatrait_message is defined %}
                             <div class="alert alert-success">{{ reatrait_message  }}</div>
                         {% endif %}
-
+                        
+                         {% if bloquer_message is defined %}
+                            <div class="alert alert-danger">{{ bloquer_message  }}</div>
+                        {% endif %}
+                        
                         {{ form(form) }}
-                       
-
+                        
+                        
                         </div>   
                 </div> 
             </div>
+           
+            
 </div>
 <div></br></br></br></br></div>
 <div class="row">
@@ -72,7 +79,7 @@
                             <th>DATE OPERATION</th>
                             <th>NUMERO COMPTE</th>
                             <th><center>Action</center></th>
-                            <th><center>Action</center></th>
+                            
                              
                         </tr>
                         {% for c in operations %}
@@ -84,9 +91,9 @@
                                 <td>{{ c.montant }}</td>
                                 <td>{{ c.dateOperation|date('d/m/y') }}</td>
                                 <td>{{ c.compte.numeroCompte}}</td>
-                                <td><a href=""><button type="button" class="btn btn-warning">Editer</button></a></td>
                                 
-                                <td><a href=""><button type="button" class="btn btn-danger">Delete</button></a></td>
+                                
+                                <td><a href=""><button type="button" class="btn btn-danger">Annuler</button></a></td>
                             </tr>
                             
                         {% endfor %}

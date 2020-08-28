@@ -1,33 +1,112 @@
 {% extends 'accueil.html.twig' %}
+{%block glyficon%}
+<link href="{{ asset('modaal/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
+<script src="{{ asset('modaal/bootstrap.min.js') }}"></script>
+<script src="{{ asset('modaal/jquery-3.2.1.min.js') }}"></script>
+
+
+
+<style>
+  .modal-header, h4, .close {
+    background-color: #5cb85c;
+    color:white !important;
+    text-align: center;
+    font-size: 30px;
+  }
+  .modal-footer {
+    background-color: #f9f9f9;
+  }
+  </style>
+{% endblock%}
 {% block title %}Gestion utilisateur{% endblock %}
 
 {% block body %}
+
+<div class="container col-md-12">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+        Ajouter Agence
+    </button>
+</div>
+<div></br></br></div>
+
 <div class="row">
-<div class="container col-md-6">
+<div class="container col-md-8">
     <div class="card ">
         <div class="card-header">Liste des utilisateurs</div>
         <div class="card-body">
             <table class="table table-striped">
                 <tr>
-                    <th>Identifiant</th>
+                    <th>Id</th>
                     <th>Nom</th>
                     <th>Prenom</th>
-                    <th>adresse</th>
-                    <th>Telephone</th> 
+                    <th>Email</th>
+                    <th>Agence</th> 
+                    <th>Action</th>
+                    <th>Action</th>
+                    <th>Action</th>  
                 </tr>
                
+               {% for u in users %}
+                       
+                            <tr>
+                                <td>{{ u.id }}</td>
+                                <td>{{ u.nom }}</td>
+                                <td>{{ u.prenom }}</td>
+                                <td>{{ u.email }}</td>
+                                <td>{{ u.agence.nom}}</td>
+                                <td><a href="{{ path('user_edit', {'id':u.id}) }}"><button type="button" class="btn btn-primary">Editer</button></a></td>
+                                <td><a href=""><button type="button" class="btn btn-warning">Affecter roles</button></a></td>
+                                <td><a href="{{ path('user_delete', {'id':u.id}) }}"><button type="button" class="btn btn-danger">Delete</button></a></td>
+                            </tr>
+                            
+                        {% endfor %}
+
             </table>        
         </div>   
     </div>
     </div>
-    <div class="container col-md-6">
+    <div class="container col-md-4">
     <div class="card ">
         <div class="card-header">Formulaire de gestion des utilisateurs</div>
         <div class="card-body">
-           
+           {{form(form)}}
         </div>   
     </div> 
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Formulaire Ajout Agence </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+            <div class="container col-md-8">
+                <div class="card ">
+                    <div class="card-header"><center style="color:red;">Veuillez renseigner ces champs !!!!</center></div>
+                        <div class="card-body">
+                     {{form(forms)}}
+                        </div>   
+                </div> 
+            </div>
+</div>
+      </div>
+      <div class="modal-footer">
+        <div class="container my-auto">
+  <div class="copyright text-center my-auto">
+    <span>Copyright &copy; Banque-du-Peuple 2020</span>
+  </div>
+</div>
+  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

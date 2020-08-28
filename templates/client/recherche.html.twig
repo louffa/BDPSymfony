@@ -1,7 +1,68 @@
 {% extends 'accueil.html.twig' %}
-{%block recherche%}
 
-{%endblock%}
+{% block title %}Gestion operation{% endblock %}
+
 {% block body %}
 
- {%endblock%}
+<div></br></br></div>
+<div class="row">
+
+        <div class="container col-md-12">
+            <div class="card ">
+                <div class="card-header"><center style="color:red;">infos compte</center></div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <tr>
+                         <th>Identifiant</th>
+                            <th>CNI</th>
+                            <th>Nom</th>
+                            <th>Prenom</th>
+                            <th>email</th>
+                            <th>Telephone</th>
+                            <th>Salaire</th>
+                            <th>Profession</th>
+                            <!--<th>Company Name</th>-->
+                            <th><center>Action</center></th>
+                            <th><center>Action</center></th>
+                            <th><center>Action</center></th> 
+                        </tr>
+                        <tr>
+                            <td>{{ client.id }}</td>
+                                <td>{{ client.cni }}</td>
+                                <td>{{ client.nom }}</td>
+                                <td>{{ client.prenom }}</td>
+                                <td>{{ client.email }}</td>
+                                <td>{{ client.telephone }}</td>
+                                <td>
+                                    {% if client.salaire==''%}
+                                        Neant
+                                        {%else%}
+                                        {{client.salaire}}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if client.profession==''%}
+                                        Neant
+                                        {%else%}
+                                        {{client.profession}}
+                                    {% endif %}
+                                    </td>
+                                <!--<td>
+                                    p.employeur.companyName
+                                    </td>-->
+                                <td><a href="{{ path('client_edit', {'id':client.id}) }}"><button type="button" class="btn btn-warning">Editer</button></a></td>
+                                <td><a href="{{ path('client_AjoutCompte', {'id':client.id}) }}"><button type="button" class="btn btn-success">Ajout Compte</button></a></td>
+                                <td><a href="{{ path('client_delete', {'id':client.id}) }}"><button type="button" class="btn btn-danger">Delete</button></a></td>
+                            
+                               
+                        </tr>
+                            
+                    </table>        
+                </div>   
+            </div>
+        </div>
+    </div>
+<div></br></br></br></br></div>
+
+
+{% endblock %}

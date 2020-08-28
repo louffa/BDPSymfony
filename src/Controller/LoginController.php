@@ -8,13 +8,13 @@ use Symfony\Component\Routing\Annotation\Route;
 class LoginController extends AbstractController
 {
     /**
-     * @Route("/", name="index")
+     * @Route("/index", name="index")
      */
     public function index()
     {
         return $this->render('login/index.html.twig');
     }
-    
+
     /**
      * @Route("/logon", name="logon")
      */

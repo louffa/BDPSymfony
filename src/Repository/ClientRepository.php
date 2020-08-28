@@ -47,4 +47,19 @@ class ClientRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function getIdByCNI($cni)
+    {
+        $query = $this->createQueryBuilder('s');
+        $query->select('s')
+        //->from(\Compte::class, 's')
+        ->where('s.cni= :cni')
+        
+        ->setParameter('cni', $cni);
+        
+    $querys = $query->getQuery();
+    foreach ($querys->getResult() as $client){
+        return $client->getId();
+    }
+        //return $query->getQuery()->getSingleResult();
+    }
 }
